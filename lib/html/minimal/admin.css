@@ -1,0 +1,21 @@
+/* Extra CSS for admin page */
+
+/* Menu */
+
+div.admin-menu {
+	width: 30px;
+	float: left;
+}
+
+img.admin-menu-link-img {
+	height: 1.2em;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 2px 2px 2px 2px;
+	border: 1px solid grey;
+}
+
+div.admin-menu-item {
+	width: auto;
+	margin: 2px 2px 2px 2px;
+}
