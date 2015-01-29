@@ -44,6 +44,19 @@ class html_generator {
 		$page = str_replace (array ('[TITLE]', '[CONTENT]'), array ($title, $content), $this->tmpl);
 		return $page;
 	}
+	
+	/*
+	 * Function to make attributes ready for inclusion in HTML-string
+	 * @param array $attributes[i] = array (key = foo, value = bar)
+	 * @return array $parsed
+	 */
+	protected function parse_attributes ($attributes) {
+		array_walk ($attributes, function (&$value, &$key) {
+			$value = sprintf ($this->attribute_wrapper, htmlentities ($value['key']), htmlentities ($value['value']));
+		});
+		return $attributes;
+	}
+
 /* TODO: replace below with XML-functions (e.g. parent, child) */
 	/*
 	 * Create a base form
@@ -69,16 +82,14 @@ class html_generator {
 			throw new Exception ("Error: method is null or empty!");
 			return false;
 		}
-		array_walk ($attributes, function (&$value, &$key) {
-			$value = sprintf ($this->attribute_wrapper, htmlentities ($value['key']), htmlentities ($value['value']));
-		});
+		$attributes = $this->parse_attributes ($attributes);
 		/* Create form */
 		$form = sprintf ($form_wrapper,
 			htmlentities ($action),
 			htmlentities ($method),
 			htmlentities ($name),
 			implode (' ', $attributes),
-			implode ("\n", $form_elements)
+			implode ("\r", $form_elements)
 		);
 		return $form;
 	}
@@ -112,9 +123,7 @@ class html_generator {
 			throw new Exception ("Error: button_text is null or empty!");
 			return false;
 		}
-		array_walk ($attributes, function (&$value, &$key) {
-			$value = sprintf ($this->attribute_wrapper, htmlentities ($value['key']), htmlentities ($value['value']));
-		});
+		$attributes = $this->parse_attributes ($attributes);
 		/* Create button */
 		$button = sprintf ($button_wrapper,
 			htmlentities ($type),
@@ -133,7 +142,80 @@ class html_generator {
 	 * @param optional string $value
 	 * @return string $textarea
 	 */
-	public function textarea_template ($name, $cols, $rows, $attributes = array, $value = null) {
+	public function textarea_template ($name, $cols, $rows, $attributes = array (), $value = null) {
+		$textarea_wrapper = '<textarea rows="%s" cols="%s" name="%s" %s>
+		%s
+		</textarea>';
+		if ($rows == '' || $rows == null || !is_numeric ($rows)) {
+			throw new Exception ("Error: rows is empty, null or not a number!");
+			return false;
+		}
+		if ($cols == '' || $cols == null || !is_numeric ($cols)) {
+			throw new Exception ("Error: cols is empty, null or not a number!");
+			return false;
+		}
+		if ($name == '' || $name == null) {
+			throw new Exception ("Error: name is empty or null!");
+			return false;
+		}
+		$attributes = $this->parse_attributes ($attributes);
+		/* Create textarea */
+		$textarea = sprintf ($textarea_wrapper,
+			htmlentities ($rows),
+			htmlentities ($cols),
+			htmlentities ($name),
+			implode (' ', $attributes),
+			htmlentities ($value)
+		);
+		return $textarea;
+	}
+
+	/*
+	 * Create a table
+	 * @param array $column_names[i] = value size of this array determines amount of columns
+	 * @param array $content[i] = row[i] = value size of this array determines amount of rows
+	 * @param optional array $attributes[i] = array (key = foo, value = bar)
+	 * @return string $table
+	 */
+	public function table_template ($column_names, $content, $attributes = array (), $row_attributes = array (), $cell_attributes = array ()) {
+		$table_template = '<table %s>
+		%s
+		</table>';
+		$attributes = $this->parse_attributes ($attributes);
+	}
+
+	public function row_template ($row, $attributes = array (), $cell_attributes = array ()) {
+		$row_wrapper = '<tr %s>
+		%s
+		</tr>';
+		if ($row == '' || $row == null || !is_array ($row)) {
+			throw new Exception ("Error: row is empty, null or not an array!");
+			return false;
+		}
+		$attributes = $this->parse_attributes ($attributes);
+	}
+
+	/*
+	 * Create a cell
+	 * @param string $cell content
+	 * @param optional array $attributes[i] = array (key = foo, value = bar)
+	 * @return string $cell
+	 */
+	public function cell_template ($cell, $attributes = array ()) {
+		$cell_wrapper = '<td %s>
+		%s
+		</td>';
+		if ($cell == '' || $cell == null) {
+			throw new Exception ("Error: cell content is empty or null!");
+			return false;
+		}
+		$attributes = $this->parse_attributes ($attributes);
+		/* Create cell */
+		$td = sprintf ($cell_wrapper,
+			implode (' ', $attributes),
+			htmlentities ($cell)
+		);
+		return $td;
 	}
 }
 
