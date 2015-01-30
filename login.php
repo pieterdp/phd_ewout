@@ -12,7 +12,7 @@ if (isset ($_GET['return-to'])) {
 } else {
 	$ref = 'index.php';
 }
-if (isset ($_SERVER['HTTPS'])) {
+if ($_SERVER['HTTPS'] != '' && isset ($_SERVER['HTTPS'])) {
 	$loc = 'https://'.$_SERVER['SERVER_NAME'].'/'.$ref;
 } else {
 	$loc = 'http://'.$_SERVER['SERVER_NAME'].'/'.$ref;

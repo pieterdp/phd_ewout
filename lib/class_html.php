@@ -173,17 +173,82 @@ class html_generator {
 	/*
 	 * Create a table
 	 * @param array $column_names[i] = value size of this array determines amount of columns
-	 * @param array $content[i] = row[i] = value size of this array determines amount of rows
+	 * @param array $content[i] = row[i] = cell_content size of this array determines amount of rows
 	 * @param optional array $attributes[i] = array (key = foo, value = bar)
+	 * @param optional array $row_attributes[i] = array (key = foo, value = bar) (attributes for the row)
+	 * @param optional array $cell_attributes[i] = array (key = foo, value = bar) (attributes for the cell)
+	 * @param optional array $header_attributes[i] = array (key = foo, value = bar) (attributes for the header cells)
 	 * @return string $table
 	 */
-	public function table_template ($column_names, $content, $attributes = array (), $row_attributes = array (), $cell_attributes = array ()) {
-		$table_template = '<table %s>
+	public function table_template ($column_names, $content, $attributes = array (), $row_attributes = array (), $cell_attributes = array (), $header_attributes = array ()) {
+		$table_wrapper = '<table %s>
 		%s
 		</table>';
+		if ($column_names == '' || $column_names == null || !is_array ($column_names)) {
+			throw new Exception ("Error: column_names is empty, null or not an array!");
+			return false;
+		}
+		if ($content == '' || $content == null || !is_array ($content)) {
+			throw new Exception ("Error: content is empty, null or not an array!");
+			return false;
+		}
 		$attributes = $this->parse_attributes ($attributes);
+		/* Create rows */
+		$rows = array ();
+		foreach ($content as $row) {
+			/* Create HTML rows */
+			array_push ($rows, $this->row_template ($row, $row_attributes, $cell_attributes));
+		}
+		/* Create table */
+		$table = sprintf ($table_wrapper,
+			implode (' ', $attributes),
+			$this->table_header_template ($column_names, $header_attributes),
+			implode ("\n", $rows)
+		);
+		return $table;
 	}
 
+	/*
+	 * Create a header
+	 * @param array $header[i] = header_content
+	 * @param optional array $attributes[i] = array (key = foo, value = bar)
+	 * @return string $header
+	 */
+	public function table_header_template ($header, $attributes = array ()) {
+		$head_wrapper = '<th %s>
+		%s
+		</th>';
+		$row_wrapper = '<tr %s>
+		%s
+		</tr>';
+		if ($header == '' || $header == null || !is_array ($header)) {
+			throw new Exception ("Error: header is empty, null or not an array!");
+			return false;
+		}
+		$attributes = $this->parse_attributes ($attributes);
+		/* Create headers */
+		$h_array = array ();
+		foreach ($header as $cell) {
+			array_push ($h_array, sprintf ($head_wrapper,
+				implode (' ', $attributes),
+				$cell
+			));
+		}
+		/* Create the header */
+		$tr = sprintf ($row_wrapper,
+			null,
+			implode ("\n", $h_array)
+		);
+		return $tr;
+	}
+
+	/*
+	 * Create a row
+	 * @param array $row[i] = cell_content
+	 * @param optional array $attributes[i] = array (key = foo, value = bar)
+	 * @param optional array $cell_attributes[i] = array (key = foo, value = bar) (attributes for the cell)
+	 * @return string $row
+	 */
 	public function row_template ($row, $attributes = array (), $cell_attributes = array ()) {
 		$row_wrapper = '<tr %s>
 		%s
@@ -193,6 +258,17 @@ class html_generator {
 			return false;
 		}
 		$attributes = $this->parse_attributes ($attributes);
+		/* Convert all cells to a string */
+		$cell_array = array ();
+		foreach ($row as $cell) {
+			array_push ($cell_array, $this->cell_template ($cell, $cell_attributes));
+		}
+		/* Create the row */
+		$tr = sprintf ($row_wrapper,
+			implode (' ', $attributes),
+			implode ("\n", $cell_array)
+		);
+		return $tr;
 	}
 
 	/*
