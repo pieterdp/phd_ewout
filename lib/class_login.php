@@ -52,7 +52,7 @@ class login extends db_connect {
 	}
 
 	/*
-	 * Function to add a CSRF-string (one is created for every session
+	 * Function to add a CSRF-string (one is created for every session)
 	 * @param string $session_hash
 	 * @return string $csrf
 	 */

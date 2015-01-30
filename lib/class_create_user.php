@@ -33,7 +33,9 @@ class create_user extends login {
 		}
 		$q = "INSERT INTO users (username, password, email, salt) VALUES (?, ?, ?, ?)";
 		$st = $this->c->prepare ($q) or die ($this->c->error);
-		$st->bind_param ('ssss', $username, password_hash ($password, PASSWORD_DEFAULT), $email, $this->mk_salt ());
+		$hash = password_hash ($password, PASSWORD_DEFAULT);
+		$salt = $this->mk_salt ();
+		$st->bind_param ('ssss', $username, $hash, $email, $salt);
 		$st->execute () or die ($st->error);
 		$st->close ();
 		$st = null;
@@ -63,7 +65,8 @@ class create_user extends login {
 	public function change_password ($uid, $password) {
 		$q = "UPDATE users SET password = ? WHERE id = ?";
 		$st = $this->c->prepare ($q) or die ($this->c->error);
-		$st->bind_param ('sd', password_hash ($password, PASSWORD_DEFAULT), $uid);
+		$hash = password_hash ($password, PASSWORD_DEFAULT);
+		$st->bind_param ('sd', $hash, $uid);
 		$st->execute () or die ($st->error);
 		$st->close ();
 		$st = null;

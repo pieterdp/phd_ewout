@@ -60,7 +60,7 @@ class html_generator {
 /* TODO: replace below with XML-functions (e.g. parent, child) */
 	/*
 	 * Create a base form
-	 * @param array $form_elements[i] = $element
+	 * @param array $form_elements[i] = $element (in HTML)
 	 * @param string $action, $method, $name attributes
 	 * @param optional array $attributes[i] = array (key = foo, value = bar) any additional attributes
 	 * @return string $form
@@ -168,6 +168,67 @@ class html_generator {
 			htmlentities ($value)
 		);
 		return $textarea;
+	}
+
+	/*
+	 * Create a select-list
+	 * @param string $name
+	 * @param array $options[i] = array (value = foo, display = bar)
+	 * @param optional array $attributes[i] = array (key = foo, value = bar)
+	 * @param optional array $option_attributes[i] = array (key = foo, value = bar)
+	 * @return string $select
+	 */
+	public function select_template ($name, $options, $attributes = array (), $option_attributes = array ()) {
+		$select_wrapper = '<select name="%s" %s>
+		%s
+		</select>';
+		if ($name == '' || $name == null) {
+			throw new Exception ("Error: name is empty or null!");
+			return false;
+		}
+		if ($options == '' || $options == null || !is_array ($options)) {
+			throw new Exception ("Error: options is empty, null or not an array!");
+			return false;
+		}
+		$attributes = $this->parse_attributes ($attributes);
+		$options_array = array ();
+		foreach ($options as $option) {
+			array_push ($options_array, $this->option_template ($option['value'], $option['display'], $option_attributes));
+		}
+		/* Create select */
+		$select = sprintf ($select_wrapper,
+			htmlentities ($name),
+			implode (' ', $attributes),
+			implode ("\n", $options_array)
+		);
+		return $select;
+	}
+
+	/*
+	 * Create an option in a select list
+	 * @param string $value
+	 * @param string $display
+	 * @param optional array $attributes[i] = array (key = foo, value = bar)
+	 * @return string $option
+	 */
+	public function option_template ($value, $display, $attributes = array ()) {
+		$option_wrapper = '<option value="%s" %s>%s</option>';
+		if ($value == '' || $value == null) {
+			throw new Exception ("Error: value is empty or null!");
+			return false;
+		}
+		if ($display == '' || $display == null) {
+			throw new Exception ("Error: display is empty or null!");
+			return false;
+		}
+		$attributes = $this->parse_attributes ($attributes);
+		/* Create option */
+		$option = sprintf ($option_wrapper,
+			htmlentities ($value),
+			implode (' ', $attributes),
+			htmlentities ($display)
+		);
+		return $option;
 	}
 
 	/*

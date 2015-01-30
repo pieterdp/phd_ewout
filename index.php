@@ -14,5 +14,6 @@ $m = new fetch_dataset ();
 /* Backu-up option */
 $c = $m->get_column_names ('Verblijf');
 echo $html->create_base_page ('Erfgoedtools', $c);
+echo $html->create_base_page ('Erfgoedtools', $c);
 exit (0);
 ?>

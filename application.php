@@ -14,9 +14,9 @@ $l->l_session_start ();
 if ($l->check_login () != true) {
 	$referrer = 'application.php';
 	if ($_SERVER['HTTPS'] != '' && isset ($_SERVER['HTTPS'])) {
-		$loc = 'https://'.$_SERVER['SERVER_NAME'].'/login.php?return-to='.$referrer;
+		$loc = 'https://'.$_SERVER['SERVER_NAME'].'/doctoraat_ewout/login.php?return-to=doctoraat_ewout/'.$referrer;
 	} else {
-		$loc = 'http://'.$_SERVER['SERVER_NAME'].'/login.php?return-to='.$referrer;
+		$loc = 'http://'.$_SERVER['SERVER_NAME'].'/doctoraat_ewout/login.php?return-to=doctoraat_ewout/'.$referrer;
 	}
 	header ("Location: $loc");
 	exit (0);
@@ -50,6 +50,22 @@ if (isset ($_GET['stage'])) {
  * 6 => GOTO 2 IF still convicts in the list, else GOTO 1
  * 7 => show matching lists
  */
+switch ($stage) {
+	case '1':
+	break;
+	case '2':
+	break;
+	case '3':
+	break;
+	case '4':
+	break;
+	case '5':
+	break;
+	case '6':
+	break;
+	case '7':
+	break;
+}
 
 
 ?>
