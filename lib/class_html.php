@@ -232,6 +232,57 @@ class html_generator {
 	}
 
 	/*
+	 * Create a general input type
+	 * @param string $name
+	 * @param string $type
+	 * @param string $id
+	 * @param string $label (text, not HTML label)
+	 * @param optional array $attributes = array (key = foo, value = bar)
+	 * @param bool $use_label (default: true) - use a label. Setting this to false allows $label to be null and the label will not be created
+	 * @return string $input
+	 */
+	public function input_template ($name, $type, $id, $label, $attributes = array (), $USE_LABEL = true) {
+		$input_wrapper = '<label for="%s">%s</label>&nbsp;<input type="%s" name="%s" id="%s" %s />';
+		$input_wrapper_no_label = '<input type="%s" name="%s" id="%s" %s />';
+		if ($name == '' || $name == null) {
+			throw new Exception ("Error: name is empty or null!");
+			return false;
+		}
+		if ($type == '' || $type == null) {
+			throw new Exception ("Error: type is empty or null!");
+			return false;
+		}
+		if ($id == '' || $id == null) {
+			throw new Exception ("Error: id is empty or null!");
+			return false;
+		}
+		if (($label == '' || $label == null) && $USE_LABEL == true) {
+			throw new Exception ("Error: label is empty or null!");
+			return false;
+		}
+		$attributes = $this->parse_attributes ($attributes);
+		/* Create input element */
+		if ($USE_LABEL == true) {
+			$input = sprintf ($input_wrapper,
+				htmlentities ($id),
+				htmlentities ($label),
+				htmlentities ($type),
+				htmlentities ($name),
+				htmlentities ($id),
+				implode (' ', $attributes)
+			);
+		} else {
+			$input = sprintf ($input_wrapper_no_label,
+				htmlentities ($type),
+				htmlentities ($name),
+				htmlentities ($id),
+				implode (' ', $attributes)
+			);
+		}
+		return $input;
+	}
+
+	/*
 	 * Create a table
 	 * @param array $column_names[i] = value size of this array determines amount of columns
 	 * @param array $content[i] = row[i] = cell_content size of this array determines amount of rows

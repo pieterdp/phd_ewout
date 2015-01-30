@@ -1,10 +1,12 @@
 <?php
 
 include_once ('lib/html_generator.php');
+include_once ('lib/class_visual_query_builder.php');
 include_once ('etc/config.php');
 include_once ('lib/class_login.php');
 
-$html = include_skin ('minimal');
+$t = 'minimal';
+$html = include_skin ($t);
 
 /*
  * Log-in business
@@ -52,6 +54,9 @@ if (isset ($_GET['stage'])) {
  */
 switch ($stage) {
 	case '1':
+		$v = new visual_query_builder ($t);
+		echo $html->create_base_page ('Convict-matcher', $v->display_where_clause ());
+		exit (0);
 	break;
 	case '2':
 	break;
