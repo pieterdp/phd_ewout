@@ -16,28 +16,32 @@ class visual_query_builder extends html_generator {
 	 * @return string $query_builder_row
 	 */
 	public function display_where_clause () {
-		$template = '<div id="where_clause-0" class="where_clause">
-			<div id="left_where_clause-0" class="where_clause_left">
-			%s
+		$template = '<div id="where" class="where">
+			<div id="where_clause-0" class="where_clause">
+				<div id="left_where_clause-0" class="where_clause_left">
+				%s
+				</div>
+				<div id="where_clause_operator-0" class="where_clause_operator">
+				%s
+				</div>
+				<div id="right_where_clause-0" class="where_clause_right">
+				%s
+				</div>
 			</div>
-			<div id="where_clause_operator-0" class="where_clause_operator">
 			%s
-			</div>
-			<div id="right_where_clause0" class="where_clause_right">
-			%s
-			</div>
 		</div>';
 		$where_display = sprintf ($template,
 			$this->input_template ('left_where_clause_input-0', 'text', 'left_where_clause_input-0', null, array (array ('key' => 'class', 'value' => 'where_clause_input')), false),
 			$this->mk_list_limited_where_operators (),
-			$this->input_template ('right_where_clause_input-0', 'text', 'right_where_clause_input-0', null, array (array ('key' => 'class', 'value' => 'where_clause_input')), false)
+			$this->input_template ('right_where_clause_input-0', 'text', 'right_where_clause_input-0', null, array (array ('key' => 'class', 'value' => 'where_clause_input')), false),
+			$this->input_template ('where-i', 'hidden', 'where-i', null, array (array ('key' => 'value', 'value' => '0')), false)
 		);
 		return $where_display;
 	}
 
 	/* MUST BE DECODED WHEN USED */
 	/*
-	 * Create a list with SQL-operators this systeem supports (<select><option></option></select>)
+	 * Create a list with SQL-operators this system supports (<select><option></option></select>)
 	 * @return string $select_list
 	 */
 	protected function mk_list_limited_where_operators () {
