@@ -5,15 +5,14 @@
 include_once ('lib/html_generator.php');
 include_once ('etc/config.php');
 include_once ('lib/class_fetch_dataset.php');
+include_once ('lib/class_visual_query_builder.php');
 
 $html = include_skin ('minimal');
-$m = new fetch_dataset ();
 
-/*
-*/
-/* Backu-up option */
-$c = $m->get_column_names ('Verblijf');
-echo $html->create_base_page ('Erfgoedtools', $c);
-echo $html->create_base_page ('Erfgoedtools', $c);
+$v = new visual_query_builder ();
+$w = $v->display_where_clause ();
+
+echo $w;
+
 exit (0);
 ?>
