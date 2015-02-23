@@ -127,6 +127,7 @@ switch ($stage) {
 							);
 			array_push ($rows, $row);
 		}
+		$prisoner = $ap->get_convict_from_prisonerBT_normalised_by_ID ($p_id);
 		/* Show results */
 		if (count ($rows) == 0) {
 			$form_content = '<div class="no-results"><p>Er werden geen resultaten gevonden.</p><input type="hidden" name="match" value="NONE_FOUND" /></div>';
@@ -136,6 +137,7 @@ switch ($stage) {
 		}
 		$template = '<div class="match_form" id="match_form">
 		<h1>Personen matchen</h1>
+		<p>%s</p>
 		%s
 		</div>';
 		$hidden_submit = $html->input_template ('submit', 'hidden', 'submit', null, array (), false);
@@ -147,7 +149,9 @@ switch ($stage) {
 										'post',
 										'match_form',
 										array (array ('key' => 'class', 'value' => 'match_form')));
-		$content = sprintf ($template, $form);
+		$content = sprintf ($template,
+							'<strong>'.$prisoner['Voornaam'].' '.$prisoner['Naam'].'</strong> &mdash; I: '.$prisoner['Inschrijvingsdatum'].' ('.$prisoner['Geboorteplaats'].' &ndash; '.$prisoner['Leeftijd'].' j.)',
+							$form);
 		echo $html->create_base_page ('Convict-matcher (stage 3)', $content);
 		exit (0);
 	break;
