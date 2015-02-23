@@ -86,7 +86,7 @@ switch ($stage) {
 							htmlentities ($convict['inschrijvingsdatum']->format ('Y-m-d')),
 							htmlentities ($convict['leeftijd']),
 							htmlentities ($convict['geboorteplaats']),
-							'<a href="application.php?stage=3&mp;id='.$convict['p_id'].'">match</a>'
+							'<a href="application.php?stage=3&amp;id='.$convict['p_id'].'">match</a>'
 							);
 			array_push ($rows, $row);
 		}
