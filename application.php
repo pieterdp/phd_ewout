@@ -146,7 +146,7 @@ switch ($stage) {
 		$input_list = array ($none_input, $form_content);
 		$input_list = array_merge ($submit, $input_list);
 		$form = $html->form_template (	$input_list,
-										'application.php?stage=5&amp;id='.$p_id,
+										'application.php?stage=5&id='.$p_id,
 										'post',
 										'match_form',
 										array (array ('key' => 'class', 'value' => 'match_form')));
