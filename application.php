@@ -171,7 +171,7 @@ switch ($stage) {
 			exit (1);
 		}
 		$match_id = $_POST['match'];
-		if ($match_id == null || $match_id == 'none' || $match_id = '') {
+		if ($match_id == null || $match_id == 'none' || $match_id == '') {
 			/* Set matched = NOT_FOUND in prisoner_BT_normalised */
 			if (!$ap->update_matched ($p_id, 'NOT_FOUND')) {
 				echo $html->create_base_page ('Convict matcher', '<div class="error"><h1>Error</h1><p>Fout: kon matched-kolom niet aanpassen. Ga terug naar <a href="application.php?stage=1">de startpagina</a>.</p></div>');
