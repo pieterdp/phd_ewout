@@ -191,7 +191,7 @@ class html_generator {
 			throw new Exception ("Error: options is empty, null or not an array!");
 			return false;
 		}
-		if ($label != null && ($attributes['id'] == '' || !isset ($attributes['id'])) {
+		if ($label != null && ($attributes['id'] == '' || !isset ($attributes['id']))) {
 			$attributes['id'] = $name.'_'.time ();
 		}
 		$attributes = $this->parse_attributes ($attributes);
