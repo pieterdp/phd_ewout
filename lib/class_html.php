@@ -201,7 +201,7 @@ class html_generator {
 		}
 		$h_label = '';
 		if ($label != null) {
-			$h_label = sprintf ($label_wrapper, $attributes['id'], htmlentities ($label));
+			$h_label = sprintf ($label_wrapper, $id, htmlentities ($label));
 		}
 		/* Create select */
 		$select = sprintf ($select_wrapper,

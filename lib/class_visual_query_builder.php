@@ -48,10 +48,12 @@ class visual_query_builder extends html_generator {
 		$hidden_submit = $this->input_template ('submit', 'hidden', 'submit', null, array (), false);
 		$submit = $this->create_submit_reset_buttons (array (array ('key' => 'class', 'value' => 'query_form')));
 		/* Create form */
-		//form_template ($form_elements, $action, $method, $name, $attributes = array ())
-		$form = $this->form_template (	array ($geboorteplaats, $datum_oud, $datum_jong, $hidden_submit, $submit),
+		$input_list = array ($geboorteplaats, $datum_oud, $datum_jong, $hidden_submit);
+		$input_list = array_merge ($input_list, $submit);
+		$form = $this->form_template (	$input_list,
 										'application.php',
 										'post',
+										'query_form',
 										array (array ('key' => 'class', 'value' => 'query_form')));
 		return sprintf ($template, $form);
 	}
