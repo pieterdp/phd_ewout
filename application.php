@@ -130,7 +130,7 @@ switch ($stage) {
 		$prisoner = $ap->get_convict_from_prisonerBT_normalised_by_ID ($p_id);
 		/* Show results */
 		if (count ($rows) == 0) {
-			$form_content = '<div class="no-results"><p>Er werden geen resultaten gevonden.</p><input type="hidden" name="match" value="NONE_FOUND" /></div>';
+			$form_content = '<div class="no-results"><p>Er werden geen resultaten gevonden.</p></div>';
 		} else {
 			$column_names = array ('UUID', 'Voornaam', 'Naam', 'Geboortedatum', 'Geboorteplaats', 'Datum (onvolledig)', 'Beroep vader');
 			$form_content = $html->table_template ($column_names, $rows, array (array ('key' => 'class', 'value' => 'person_table_results')), array (array ('key' => 'class', 'value' => 'person_table_results')), array (array ('key' => 'class', 'value' => 'person_table_results')), array (array ('key' => 'class', 'value' => 'person_table_results')));
@@ -143,9 +143,10 @@ switch ($stage) {
 		$hidden_submit = $html->input_template ('submit', 'hidden', 'submit', null, array (), false);
 		$submit = $html->create_submit_reset_buttons (array (array ('key' => 'class', 'value' => 'match_form')));
 		$input_list = array ($form_content);
-		$input_list = array_merge ($input_list, $submit);
+		$none_input  = $html->input_template ('match', 'radio', 'match-none', 'Geen match gevonden', array (array ('key' => 'class', 'value' => 'person_table_results')));
+		$input_list = array_merge ($submit, $none_input, $input_list);
 		$form = $html->form_template (	$input_list,
-										'application.php?stage=5',
+										'application.php?stage=5&amp;id='.$p_id,
 										'post',
 										'match_form',
 										array (array ('key' => 'class', 'value' => 'match_form')));
@@ -158,10 +159,43 @@ switch ($stage) {
 	case '4':
 	break;
 	case '5':
+		$ap = new application_fetcher ();
+		if (!isset ($_GET['id'])) {
+			echo $html->create_base_page ('Convict matcher', '<div class="error"><h1>Error</h1><p>Fout: geen ID opgegeven. Ga terug naar <a href="application.php?stage=1">de startpagina</a>.</p></div>');
+			exit (1);
+		}
+		$p_id = $_GET['id'];
+		/* Get matched $_POST['match'] either has a value or is empty */
+		if (!isset ($_POST['submit'])) {
+			echo $html->create_base_page ('Convict matcher', '<div class="error"><h1>Error</h1><p>Fout: formulier niet ingevuld. Ga terug naar <a href="application.php?stage=1">de startpagina</a>.</p></div>');
+			exit (1);
+		}
+		$match_id = $_POST['match'];
+		if ($match_id == null || $match_id == 'none' || $match_id = '') {
+			/* Set matched = NOT_FOUND in prisoner_BT_normalised */
+			if (!$ap->update_matched ($p_id, 'NOT_FOUND')) {
+				echo $html->create_base_page ('Convict matcher', '<div class="error"><h1>Error</h1><p>Fout: kon matched-kolom niet aanpassen. Ga terug naar <a href="application.php?stage=1">de startpagina</a>.</p></div>');
+				exit (1);
+			}
+		} else {
+			/* Update linker table */
+			if (!$ap->update_linker_table ($p_id, $match_id)) {
+				echo $html->create_base_page ('Convict matcher', '<div class="error"><h1>Error</h1><p>Fout: kon linker-tabel niet aanpassen. Ga terug naar <a href="application.php?stage=1">de startpagina</a>.</p></div>');
+				exit (1);
+			}
+		}
+		$content = '<div class="content">
+		<h1>Koppelen geslaagd</h1>
+		<p>Koppelen geslaagd. U kan <a href="application.php?stage=1">opnieuw beginnen</a> of naar het <a href="application.php?stage=7">overzicht van gekoppelde personen</a> gaan.</p>
+		</div>';
+		echo $html->create_base_page ('Convict matcher (stage 5)', $content);
+		exit (0);
 	break;
 	case '6':
 	break;
 	case '7':
+		/* Get people from the linking table*/
+		/* Show them */
 	break;
 }
 

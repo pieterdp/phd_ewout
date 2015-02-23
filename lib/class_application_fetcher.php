@@ -132,12 +132,58 @@ class application_fetcher extends fetch_dataset {
 		return $result;
 	}
 
+	/*
+	 * Function to update the linker table linking a convict and a person
+	 * @param string $p_id - id of the convict (Id_gedetineerde)
+	 * @param string $uuid - id of the person
+	 * @return true/false
+	 */
+	public function update_linker_table ($p_id, $uuid) {
+		$q = "INSERT INTO p_link_g (Id_gedetineerde, uuid) VALUES (?, ?)";
+		if (!$stmt = $this->c->prepare ($q)) {
+			throw new Exception ("Error: failed to prepare query $q: ".$this->c->error);
+			return false;
+		}
+		$stmt->bind_param ('ss', $p_id, $uuid);
+		if (!$stmt->execute ()) {
+			throw new Exception ("Error: failed to execute query $q: ".$stmt->error);
+			return false;
+		}
+		$stmt->close ();
+		$stmt = null;
+		/* Update matched */
+		if ($this->update_matched ($p_id, true) != true) {
+			throw new Exception ("Error: failed to update matched-column.");
+			return false;
+		}
+		return true;
+	}
 
-
-
-
-
-
+	/*
+	 * Function to updated the 'matched'-column in prisonerBigTable_normalised
+	 * @param string $p_id - Id_gedetineerde
+	 * @param bool $matched (true/false) (TRUE/NOT_FOUND)
+	 * @return true/false
+	 */
+	public function update_matched ($p_id, $matched) {
+		$m_c = 'TRUE';
+		if ($matched == false) {
+			$m_c = 'NOT_FOUND';
+		}
+		$q = "UPDATE prisonerBigTable_normalised p SET p.matched = ? WHERE p.p_ID = ?";
+		if (!$stmt = $this->c->prepare ($q)) {
+			throw new Exception ("Error: failed to prepare query $q: ".$this->c->error);
+			return false;
+		}
+		$stmt->bind_param ('ss', $m_c, $p_id);
+		if (!$stmt->execute ()) {
+			throw new Exception ("Error: failed to execute query $q: ".$stmt->error);
+			return false;
+		}
+		$stmt->close ();
+		$stmt = null;
+		return true;
+	}
 
 
 
