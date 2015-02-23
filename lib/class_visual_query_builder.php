@@ -30,7 +30,7 @@ class visual_query_builder extends html_generator {
 		foreach ($list_of_gb as $gb) {
 			array_push ($options, array ('value' => $gb, 'display' => $gb));
 		}
-		$gb_places = $this->select_template ('geboorteplaats', $options, array (array ('key' => 'id', 'value' => 'geboorteplaatsen-select'), array ('key' => 'class', 'value' => 'query_form')), array (array ('key' => 'class', 'value' => 'query_form')), 'Geboorteplaats');
+		$gb_places = $this->select_template ('geboorteplaats', $options, array (array ('key' => 'id', 'value' => 'geboorteplaatsen-select'), array ('key' => 'class', 'value' => 'query_form')), array (array ('key' => 'class', 'value' => 'query_form')), 'Geboorteplaats', 'geboorteplaatsen-select');
 		$geboorteplaats = sprintf ($input_wrapper, $gb_places);
 		/* Create other input forms */
 		$date_input = array (	$this->input_template ('datum_oud_d', 'text', 'datum_oud_d', null, array (array ('key' => 'class', 'value' => 'datum'), array ('key' => 'size', 'value' => 2)), false),
@@ -50,7 +50,7 @@ class visual_query_builder extends html_generator {
 		/* Create form */
 		//form_template ($form_elements, $action, $method, $name, $attributes = array ())
 		$form = $this->form_template (	array ($geboorteplaats, $datum_oud, $datum_jong, $hidden_submit, $submit),
-										'',
+										'application.php',
 										'post',
 										array (array ('key' => 'class', 'value' => 'query_form')));
 		return sprintf ($template, $form);

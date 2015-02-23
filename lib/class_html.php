@@ -178,7 +178,7 @@ class html_generator {
 	 * @param optional array $option_attributes[i] = array (key = foo, value = bar)
 	 * @return string $select
 	 */
-	public function select_template ($name, $options, $attributes = array (), $option_attributes = array (), $label = null) {
+	public function select_template ($name, $options, $attributes = array (), $option_attributes = array (), $label = null, $id = null) {
 		$select_wrapper = '%s<select name="%s" %s>
 		%s
 		</select>';
@@ -191,8 +191,8 @@ class html_generator {
 			throw new Exception ("Error: options is empty, null or not an array!");
 			return false;
 		}
-		if ($label != null && ($attributes['id'] == '' || !isset ($attributes['id']))) {
-			$attributes['id'] = $name.'_'.time ();
+		if ($label != null && ($id == '' || !isset ($id))) {
+			$id = $name.'_'.time ();
 		}
 		$attributes = $this->parse_attributes ($attributes);
 		$options_array = array ();
