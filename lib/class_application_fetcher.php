@@ -122,7 +122,7 @@ class application_fetcher extends fetch_dataset {
 		array_push ($results, array (
 							'uuid' => $uuid,
 							'geboorteplaats' => $geboorteplaats,
-							'geboortedatum' => $geboortedatum
+							'geboortedatum' => $geboortedatum,
 							'datum_onvolledig' => $datum_onvolledig,
 							'voornaam' => $voornaam,
 							'naam' => $naam,
