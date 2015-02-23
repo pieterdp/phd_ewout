@@ -53,7 +53,7 @@ class fetch_dataset extends db_connect {
 	 */
 	public function select_gb_from_prisonerBT_normalised () {
 		$result = array ();
-		$q = "SELECT DISTINCT `Geboorteplaats` FROM `prisonerBigTable_normalised` WHERE `Geboorteplaats` IS NOT NULL AND `Geboorteplaats` <> 'Onbekend' AND `Geboorteplaats` <> '' AND `matched` = 'NO'";
+		$q = "SELECT DISTINCT `Geboorteplaats` FROM `prisonerBigTable_normalised` WHERE `Geboorteplaats` IS NOT NULL AND `Geboorteplaats` <> 'Onbekend' AND `Geboorteplaats` <> '' AND `matched` = 'NO' ORDER BY `Geboorteplaats`";
 		if ($this->c->real_query ($q) != true) {
 			throw new Exception ("Error: failed executing query: ".$this->c->error);
 			return false;
@@ -92,7 +92,9 @@ class fetch_dataset extends db_connect {
 			throw new Exception ("Error: failed to prepare query $q: ".$this->c->error);
 			return false;
 		}
-		$stmt->bind_param ('sss', '%'.$gb_plaats.'%', $date_jong->format ('o-m-d H:i:s'), $date_oud->format ('o-m-d H:i:s'));
+		$date_jong = $date_jong->format ('o-m-d H:i:s');
+		$date_oud = $date_oud->format ('o-m-d H:i:s')
+		$stmt->bind_param ('sss', '%'.$gb_plaats.'%', $date_jong, $date_oud);
 		if (!$stmt->execute ()) {
 			throw new Exception ("Error: failed to execute query $q: ".$stmt->error);
 			return false;

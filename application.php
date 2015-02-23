@@ -73,6 +73,7 @@ switch ($stage) {
 		$datum_oud = DateTime::createFromFormat ('Y-m-d', $datum_oud['y'].'-'.$datum_oud['m'].'-'.$datum_oud['d']);
 		$datum_jong = DateTime::createFromFormat ('Y-m-d', $datum_jong['y'].'-'.$datum_jong['m'].'-'.$datum_jong['d']);
 		$convicts = $f->get_convicts_from_prisonerBT_normalised ($geboorteplaats, $datum_oud, $datum_jong);
+		/* Empty dates! */
 		/* Show result */
 		//table_template ($column_names, $content, $attributes = array (), $row_attributes = array (), $cell_attributes = array (), $header_attributes = array ())
 		$rows = array ();
