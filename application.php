@@ -110,6 +110,12 @@ switch ($stage) {
 		$rows = array ();
 		foreach ($resulting_ids as $id) {
 			$full = $ap->get_person_from_RAB_geboortes_normalised_by_ID ($id);
+			$c_names = array ('uuid', 'voornaam', 'naam', 'geboortedatum', 'geboorteplaats', 'datum_onvolledig', 'vader_beroep');
+			foreach ($c_names as $c_name) {
+				if (!isset ($full[$c_name])) {
+					$full[$c_name] = '';
+				}
+			}
 			$row = array (	htmlentities ($full['uuid']),
 							htmlentities ($full['voornaam']),
 							htmlentities ($full['naam']),
