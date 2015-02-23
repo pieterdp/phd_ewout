@@ -82,7 +82,7 @@ switch ($stage) {
 		foreach ($convicts as $convict) {
 			$row = array (	htmlentities ($convict['p_id']),
 							htmlentities ($convict['naam']),
-							htmlentities ($convict['voornaam'],
+							htmlentities ($convict['voornaam']),
 							htmlentities ($convict['inschrijvingsdatum']->format ('Y-m-d')),
 							htmlentities ($convict['leeftijd']),
 							htmlentities ($convict['geboorteplaats']),
