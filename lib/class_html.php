@@ -99,7 +99,7 @@ class html_generator {
 	 * @param array $attributes
 	 * @return array $buttons[submit, reset]
 	 */
-	protected function create_submit_reset_buttons ($attributes) {
+	public function create_submit_reset_buttons ($attributes) {
 		$buttons = array ();
 		$buttons['submit'] = $this->button_template ('submit', 'Submit', $attributes);
 		$buttons['reset'] = $this->button_template ('reset', 'Reset', $attributes);
