@@ -4,6 +4,7 @@ include_once ('lib/html_generator.php');
 include_once ('lib/class_visual_query_builder.php');
 include_once ('etc/config.php');
 include_once ('lib/class_login.php');
+include_once ('lib/class_fetch_dataset.php');
 
 $t = 'minimal';
 $html = include_skin ($t);
@@ -43,7 +44,7 @@ if (isset ($_GET['stage'])) {
 }
 /*
  * Stages:
- * 1 => allow the user to define on which set of convicts he wants to work on: allow use of a where-query
+ * 1 => select the convicts from one of the predefined queries
  * 2 => show the user the result set & select the first convict to work on
  * 3 => match the convict to the list of births & select possible matches
  * 3.5 => if no matches were found, broaden criteria
@@ -55,7 +56,8 @@ if (isset ($_GET['stage'])) {
 switch ($stage) {
 	case '1':
 		$v = new visual_query_builder ($t);
-		echo $html->create_base_page ('Convict-matcher', $v->display_where_clause ());
+		$f = new fetch_dataset ();
+		echo $html->create_base_page ('Convict-matcher', $v->display_convict_query_form ($f->select_gb_from_prisonerBT_normalised ()));
 		exit (0);
 	break;
 	case '2':

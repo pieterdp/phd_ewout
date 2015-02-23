@@ -120,11 +120,33 @@ FROM `ewout_doctoraat_16012015`.`prisonerBigTable`;
 		return true;
 	}
 
+	/*
+	 * Function to return a list of Geboorteplaatsen from prisonerBigTable_normalised
+	 * @return array $geboorteplaatsen
+	 */
+	public function select_gb_from_prisonerBT_normalised () {
+		$result = array ();
+		$q = "SELECT DISTINCT `Geboorteplaats` FROM `prisonerBigTable_normalised` WHERE `Geboorteplaats` IS NOT NULL AND `Geboorteplaats` <> 'Onbekend'";
+		if ($this->c->real_query ($q) != true) {
+			throw new Exception ("Error: failed executing query: ".$this->c->error);
+			return false;
+		}
+		$r = $this->c->store_result ();
+		while ($row = $r->fetch_assoc ()) {
+			array_push ($result, $row['Geboorteplaats']);
+		}
+		return $result;
+	}
+	
+
 	protected function normalise_rabGeboortes () {
 		$q = "";
 		$q = "INSERT INTO `RAB_geboortes_normalised`(`UUID`, `ACCESS_ID`, `Microfilmnummer`, `Inventarisnummer`, `Geboorteplaats`, `Aktenummer`, `Datum_onvolledig`, `Datum_Republikeins`, `Aktedatum`, `Geboortedatum`, `Voornaam`, `Naam`, `Vader_voornaam`, `Vader_naam`, `Moeder_voornaam`, `Moeder_naam`, `Straat`, `Huisnummer`, `Wijk`, `Doodgeboren`, `Geslacht`, `Opmerkingen`, `Vader_leeftijd`, `Vader_geboorteplaats`, `Vader_geboortedatum`, `Vader_woonplaats`, `Vader_beroep`, `Vader_opmerking`, `Moeder_leeftijd`, `Moeder_geboorteplaats`, `Moeder_geboortedatum`, `Moeder_woonplaats`, `Moeder_beroep`, `Moeder_opmerking`, `Jaar`) SELECT `UUID`, `Id`, `Microfilmnummer`, `Inventarisnummer`, `geboorteplaats`, `Aktenummer`, `onvolledige datum`, `Republikeinse datum`, STR_TO_DATE(`Aktedatum`,'%e/%c/%Y %k:%i:%s'), STR_TO_DATE(`geboortedatum`,'%e/%c/%Y %k:%i:%s'), `Voornaam`, `Naam`, `Voornaam vader`, `Naam vader`, `Voornaam moeder`, `Naam moeder`, `straat`, `huisnummer`, `wijk`, `doodgeboren`, `geslacht`, `Opmerkingen`, `Leeftijd vader`, `Geboorteplaats vader`, `Geboortedatum vader`, `Woonplaats vader`, `Beroep vader`, `opmerking vader`, `Leeftijd moeder`, `Geboorteplaats moeder`, `Geboortedatum moeder`, `Woonplaats moeder`, `Beroep moeder`, `opmerking moeder`, `jaar` FROM `RAB_geboortes`;";
 		/* Convert dates to MYSQL-dates 
 		 * SELECT STR_TO_DATE('25/8/1851 0:00:00','%e/%c/%Y %k:%i:%s');*/
+	}
+
+	protected function normalise_prisonerBigTable () {
 	}
 
 	/*

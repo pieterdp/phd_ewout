@@ -178,10 +178,11 @@ class html_generator {
 	 * @param optional array $option_attributes[i] = array (key = foo, value = bar)
 	 * @return string $select
 	 */
-	public function select_template ($name, $options, $attributes = array (), $option_attributes = array ()) {
-		$select_wrapper = '<select name="%s" %s>
+	public function select_template ($name, $options, $attributes = array (), $option_attributes = array (), $label = null) {
+		$select_wrapper = '%s<select name="%s" %s>
 		%s
 		</select>';
+		$label_wrapper = '<label for="%s">%s</label>';
 		if ($name == '' || $name == null) {
 			throw new Exception ("Error: name is empty or null!");
 			return false;
@@ -190,13 +191,21 @@ class html_generator {
 			throw new Exception ("Error: options is empty, null or not an array!");
 			return false;
 		}
+		if ($label != null && ($attributes['id'] == '' || !isset ($attributes['id'])) {
+			$attributes['id'] = $name.'_'.time ();
+		}
 		$attributes = $this->parse_attributes ($attributes);
 		$options_array = array ();
 		foreach ($options as $option) {
 			array_push ($options_array, $this->option_template ($option['value'], $option['display'], $option_attributes));
 		}
+		$h_label = '';
+		if ($label != null) {
+			$h_label = sprintf ($label_wrapper, $attributes['id'], htmlentities ($label));
+		}
 		/* Create select */
 		$select = sprintf ($select_wrapper,
+			$h_label,
 			htmlentities ($name),
 			implode (' ', $attributes),
 			implode ("\n", $options_array)
@@ -231,6 +240,7 @@ class html_generator {
 		return $option;
 	}
 
+	/* TODO: support hidden labels */
 	/*
 	 * Create a general input type
 	 * @param string $name
