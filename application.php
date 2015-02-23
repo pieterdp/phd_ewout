@@ -132,8 +132,8 @@ switch ($stage) {
 		<h1>Personen matchen</h1>
 		%s
 		</div>';
-		$hidden_submit = $this->input_template ('submit', 'hidden', 'submit', null, array (), false);
-		$submit = $this->create_submit_reset_buttons (array (array ('key' => 'class', 'value' => 'match_form')));
+		$hidden_submit = $html->input_template ('submit', 'hidden', 'submit', null, array (), false);
+		$submit = $html->create_submit_reset_buttons (array (array ('key' => 'class', 'value' => 'match_form')));
 		$input_list = array ($form_content);
 		$input_list = array_merge ($input_list, $submit);
 		$form = $html->form_template (	$input_list,
