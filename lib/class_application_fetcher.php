@@ -118,7 +118,7 @@ class application_fetcher extends fetch_dataset {
 			return false;
 		}
 		$stmt->bind_result ($uuid, $geboorteplaats, $geboortedatum, $datum_onvolledig, $voornaam, $naam, $vader_beroep);
-		$stmt->fetch ()); /* Only one result */
+		$stmt->fetch (); /* Only one result */
 		array_push ($results, array (
 							'uuid' => $uuid,
 							'geboorteplaats' => $geboorteplaats,
