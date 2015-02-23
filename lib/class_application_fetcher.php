@@ -107,7 +107,6 @@ class application_fetcher extends fetch_dataset {
 	public function get_person_from_RAB_geboortes_normalised_by_ID ($uuid) {
 		$q = "SELECT g.UUID, g.Geboorteplaats, g.Geboortedatum, g.Datum_onvolledig, g.Voornaam, g.Naam, g.Vader_beroep FROM RAB_geboortes_normalised g WHERE
 		g.UUID = ?";
-		$results = array ();
 		if (!$stmt = $this->c->prepare ($q)) {
 			throw new Exception ("Error: failed to prepare query $q: ".$this->c->error);
 			return false;
@@ -119,7 +118,7 @@ class application_fetcher extends fetch_dataset {
 		}
 		$stmt->bind_result ($uuid, $geboorteplaats, $geboortedatum, $datum_onvolledig, $voornaam, $naam, $vader_beroep);
 		$stmt->fetch (); /* Only one result */
-		array_push ($results, array (
+		$result = array (
 							'uuid' => $uuid,
 							'geboorteplaats' => $geboorteplaats,
 							'geboortedatum' => $geboortedatum,
@@ -127,10 +126,10 @@ class application_fetcher extends fetch_dataset {
 							'voornaam' => $voornaam,
 							'naam' => $naam,
 							'vader_beroep' => $vader_beroep
-						));
+						);
 		$stmt->close ();
 		$stmt = null;
-		return $results;
+		return $result;
 	}
 
 
