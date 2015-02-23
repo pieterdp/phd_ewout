@@ -142,9 +142,9 @@ switch ($stage) {
 		</div>';
 		$hidden_submit = $html->input_template ('submit', 'hidden', 'submit', null, array (), false);
 		$submit = $html->create_submit_reset_buttons (array (array ('key' => 'class', 'value' => 'match_form')));
-		$input_list = array ($form_content);
+		$input_list = array ($none_input, $form_content);
 		$none_input  = $html->input_template ('match', 'radio', 'match-none', 'Geen match gevonden', array (array ('key' => 'class', 'value' => 'person_table_results')));
-		$input_list = array_merge ($submit, $none_input, $input_list);
+		$input_list = array_merge ($submit, $input_list);
 		$form = $html->form_template (	$input_list,
 										'application.php?stage=5&amp;id='.$p_id,
 										'post',
