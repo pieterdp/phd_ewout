@@ -112,6 +112,7 @@ class fetch_dataset extends db_connect {
 			);
 			array_push ($result, $row);
 		}
+		$stmt->close ();
 		$stmt = null;
 		return $result;
 	}
