@@ -74,6 +74,7 @@ switch ($stage) {
 		$datum_jong = DateTime::createFromFormat ('Y-m-d', $datum_jong['y'].'-'.$datum_jong['m'].'-'.$datum_jong['d']);
 		$convicts = $f->get_convicts_from_prisonerBT_normalised ($geboorteplaats, $datum_oud, $datum_jong);
 		/* Empty dates! */
+		/* Empty results */
 		/* Show result */
 		//table_template ($column_names, $content, $attributes = array (), $row_attributes = array (), $cell_attributes = array (), $header_attributes = array ())
 		$rows = array ();
@@ -82,7 +83,7 @@ switch ($stage) {
 			$row = array (	$convict['p_id'],
 							$convict['naam'],
 							$convict['voornaam'],
-							$convict['inschrijfdatum']->format ('Y-m-d'),
+							$convict['inschrijvingsdatum']->format ('Y-m-d'),
 							$convict['leeftijd'],
 							$convict['geboorteplaats'],
 							'<a href="application.php?stage=3&mp;id='.$convict['p_id'].'">match</a>'
