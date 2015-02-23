@@ -93,7 +93,7 @@ class fetch_dataset extends db_connect {
 			return false;
 		}
 		$date_jong = $date_jong->format ('o-m-d H:i:s');
-		$date_oud = $date_oud->format ('o-m-d H:i:s')
+		$date_oud = $date_oud->format ('o-m-d H:i:s');
 		$stmt->bind_param ('sss', '%'.$gb_plaats.'%', $date_jong, $date_oud);
 		if (!$stmt->execute ()) {
 			throw new Exception ("Error: failed to execute query $q: ".$stmt->error);
