@@ -61,6 +61,36 @@ switch ($stage) {
 		exit (0);
 	break;
 	case '2':
+		/* Fetch result */
+		$f = new fetch_dataset ();
+		if (!isset ($_POST['submit'])) {
+			echo $html->create_base_page ('Convict matcher', '<div class="error"><h1>Error</h1><p>Fout: formulier niet ingevuld. Ga terug naar <a href="application.php?stage=1">de startpagina</a>.</p></div>');
+			exit (1);
+		}
+		$geboorteplaats = $_POST['geboorteplaats'];
+		$datum_oud = array ('y' => $_POST['datum_oud_y'], 'm' => $_POST['datum_oud_m'], 'd' => $_POST['datum_oud_d']);
+		$datum_jong = array ('y' => $_POST['datum_jong_y'], 'm' => $_POST['datum_jong_m'], 'd' => $_POST['datum_jong_d']);
+		$datum_oud = DateTime::createFromFormat ('Y-m-d', $datum_oud['y'].'-'.$datum_oud['m'].'-'.$datum_oud['d']);
+		$datum_jong = DateTime::createFromFormat ('Y-m-d', $datum_jong['y'].'-'.$datum_jong['m'].'-'.$datum_jong['d']);
+		$convicts = $f->get_convicts_from_prisonerBT_normalised ($geboorteplaats, $datum_oud, $datum_jong);
+		/* Show result */
+		//table_template ($column_names, $content, $attributes = array (), $row_attributes = array (), $cell_attributes = array (), $header_attributes = array ())
+		$rows = array ();
+		$column_names = array ('ID_gedetineerde', 'Naam', 'Voornaam', 'Inschrijfdatum', 'Leeftijd', 'Geboorteplaats', 'Match');
+		foreach ($convicts as $convict) {
+			$row = array (	$convict['p_id'],
+							$convict['naam'],
+							$convict['voornaam'],
+							$convict['inschrijfdatum']->format ('Y-m-d'),
+							$convict['leeftijd'],
+							$convict['geboorteplaats'],
+							'<a href="application.php?stage=3&mp;id='.$convict['p_id'].'">match</a>'
+							);
+			array_push ($rows, $row);
+		}
+		$table = $html->table_template ($column_names, $rows, array (array ('key' => 'class', 'value' => 'convict_table_results')), array (array ('key' => 'class', 'value' => 'convict_table_results')), array (array ('key' => 'class', 'value' => 'convict_table_results')), array (array ('key' => 'class', 'value' => 'convict_table_results')));
+		echo $html->create_base_page ('Convict-matcher (stage 2)', $table);
+		exit (0);
 	break;
 	case '3':
 	break;

@@ -89,7 +89,7 @@ class html_generator {
 			htmlentities ($method),
 			htmlentities ($name),
 			implode (' ', $attributes),
-			implode ("\r", $form_elements)
+			implode ("\r<br/>", $form_elements)
 		);
 		return $form;
 	}

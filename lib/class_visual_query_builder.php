@@ -37,13 +37,13 @@ class visual_query_builder extends html_generator {
 								$this->input_template ('datum_oud_m', 'text', 'datum_oud_m', null, array (array ('key' => 'class', 'value' => 'datum'), array ('key' => 'size', 'value' => 2)), false),
 								$this->input_template ('datum_oud_y', 'text', 'datum_oud_y', null, array (array ('key' => 'class', 'value' => 'datum'), array ('key' => 'size', 'value' => 4)), false));
 		$datum_oud = sprintf ($date_template,
-								'Datum_oud (dd/mm/yyyy)',
+								'Oudste inschrijvingsdatum (dd/mm/yyyy)',
 								implode ('&nbsp;&mdash;&nbsp;', $date_input));
 		$date_input = array (	$this->input_template ('datum_jong_d', 'text', 'datum_jong_d', null, array (array ('key' => 'class', 'value' => 'datum'), array ('key' => 'size', 'value' => 2)), false),
 								$this->input_template ('datum_jong_m', 'text', 'datum_jong_m', null, array (array ('key' => 'class', 'value' => 'datum'), array ('key' => 'size', 'value' => 2)), false),
 								$this->input_template ('datum_jong_y', 'text', 'datum_jong_y', null, array (array ('key' => 'class', 'value' => 'datum'), array ('key' => 'size', 'value' => 4)), false));
 		$datum_jong = sprintf ($date_template,
-								'Datum_jong (dd/mm/yyyy)',
+								'Jongste inschrijvingsdatum (dd/mm/yyyy)',
 								implode ('&nbsp;&mdash;&nbsp;', $date_input));
 		$hidden_submit = $this->input_template ('submit', 'hidden', 'submit', null, array (), false);
 		$submit = $this->create_submit_reset_buttons (array (array ('key' => 'class', 'value' => 'query_form')));
@@ -51,7 +51,7 @@ class visual_query_builder extends html_generator {
 		$input_list = array ($geboorteplaats, $datum_oud, $datum_jong, $hidden_submit);
 		$input_list = array_merge ($input_list, $submit);
 		$form = $this->form_template (	$input_list,
-										'application.php',
+										'application.php?stage=2',
 										'post',
 										'query_form',
 										array (array ('key' => 'class', 'value' => 'query_form')));
