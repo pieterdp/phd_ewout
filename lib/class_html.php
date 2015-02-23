@@ -305,6 +305,7 @@ class html_generator {
 	public function table_template ($column_names, $content, $attributes = array (), $row_attributes = array (), $cell_attributes = array (), $header_attributes = array ()) {
 		$table_wrapper = '<table %s>
 		%s
+		%s
 		</table>';
 		if ($column_names == '' || $column_names == null || !is_array ($column_names)) {
 			throw new Exception ("Error: column_names is empty, null or not an array!");
@@ -403,15 +404,12 @@ class html_generator {
 		$cell_wrapper = '<td %s>
 		%s
 		</td>';
-		if ($cell == '' || $cell == null) {
-			throw new Exception ("Error: cell content is empty or null!");
-			return false;
-		}
 		$attributes = $this->parse_attributes ($attributes);
 		/* Create cell */
 		$td = sprintf ($cell_wrapper,
 			implode (' ', $attributes),
-			htmlentities ($cell)
+			//htmlentities ($cell)
+			$cell
 		);
 		return $td;
 	}

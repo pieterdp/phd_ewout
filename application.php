@@ -80,12 +80,12 @@ switch ($stage) {
 		$rows = array ();
 		$column_names = array ('ID_gedetineerde', 'Naam', 'Voornaam', 'Inschrijfdatum', 'Leeftijd', 'Geboorteplaats', 'Match');
 		foreach ($convicts as $convict) {
-			$row = array (	$convict['p_id'],
-							$convict['naam'],
-							$convict['voornaam'],
-							$convict['inschrijvingsdatum']->format ('Y-m-d'),
-							$convict['leeftijd'],
-							$convict['geboorteplaats'],
+			$row = array (	htmlentities ($convict['p_id']),
+							htmlentities ($convict['naam']),
+							htmlentities ($convict['voornaam'],
+							htmlentities ($convict['inschrijvingsdatum']->format ('Y-m-d')),
+							htmlentities ($convict['leeftijd']),
+							htmlentities ($convict['geboorteplaats']),
 							'<a href="application.php?stage=3&mp;id='.$convict['p_id'].'">match</a>'
 							);
 			array_push ($rows, $row);
