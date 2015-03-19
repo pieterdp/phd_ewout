@@ -194,7 +194,11 @@ switch ($stage) {
 	case '6':
 	break;
 	case '7':
+		$ap = new application_fetcher ();
 		/* Get people from the linking table*/
+		$ids = $ap->get_linked ();
+		$linked_people = array ();
+		
 		/* Show them */
 	break;
 }

@@ -185,7 +185,32 @@ class application_fetcher extends fetch_dataset {
 		return true;
 	}
 
-
+	/*
+	 * Function to get the ID's of the prisoner & the RAB from the linker table
+	 * @return array $result (uuid, id_gedetineerde)
+	 */
+	public function get_linked () {
+		$q = "SELECT l.uuid, l.Id_gedetineerde FROM p_link_g l;";
+		if (!$stmt = $this->c->prepare ($q)) {
+			throw new Exception ("Error: failed to prepare query $q: ".$this->c->error);
+			return false;
+		}
+		if (!$stmt->execute ()) {
+			throw new Exception ("Error: failed to execute query $q: ".$stmt->error);
+			return false;
+		}
+		$stmt->bind_result ($uuid, $id_g);
+		$result = array ();
+		while ($stmt->fetch ()) {
+			array_push ($result, array (
+				'uuid' => $uuid,
+				'id_gedetineerde' => $id_g
+			));
+		}
+		$stmt->close ();
+		$stmt = null;
+		return $result;
+	}
 
 
 
