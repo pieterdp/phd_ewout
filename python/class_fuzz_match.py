@@ -11,14 +11,6 @@ class fuzzMatch:
 		self.strcmp = [string_a, string_b]
 		self.a = ALGORITHM
 
-	def __iter__ (self):
-		"""
-		"""
-		
-	def __next__ (self):
-		"""
-		"""
-	
 	def fPrepare (self, fString):
 		"""
 		"""
