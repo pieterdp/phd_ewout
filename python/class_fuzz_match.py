@@ -29,11 +29,11 @@ class fuzzMatch:
 	def fMatch (self):
 		"""
 		"""
-		self.strcmp = [self.fPrepare (self, elem) for elem in self.strcmp]
+		self.strcmp = [self.fPrepare (elem) for elem in self.strcmp]
 		self.mFunc = getattr ('fuzzMatch', "match%s" % self.a, self.matchLevenshtein)
 		if !callable (self.mFunc):
 			# Error
-		self.simRate = self.mFunc (self)
+		self.simRate = self.mFunc ()
 		return self.simRate
 		
 	def matchLevenshtein (self):
