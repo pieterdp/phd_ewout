@@ -23,9 +23,12 @@ class fuzzMatch:
 		"""
 		self.strcmp = [self.fPrepare (elem) for elem in self.strcmp]
 		self.mFunc = getattr ('fuzzMatch', "match%s" % self.a, self.matchLevenshtein)
-		if !callable (self.mFunc):
-			# Error
-		self.simRate = self.mFunc ()
+		try:
+			self.simRate = self.mFunc ()
+		except AttributeError:
+			print ("Error: function %s does not exist." % self.mFunc)
+			traceback.print_exc (file=sys.stdout)
+			sys.exit (2)
 		return self.simRate
 		
 	def matchLevenshtein (self):
