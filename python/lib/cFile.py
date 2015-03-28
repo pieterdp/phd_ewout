@@ -1,5 +1,5 @@
 import configparser
-import os
+import os.path
 
 
 class cFile:
@@ -9,10 +9,7 @@ class cFile:
     def __init__(self, config_file):
         self.configFile = config_file
         self.config = configparser.ConfigParser()
-        try:
-            self.fsock = open(self.configFile, "r")
-            self.fsock.close()
-        except FileNotFoundError:
+        if os.path.exists (self.configFile) != True:
             self.create()
 
     def create(self):

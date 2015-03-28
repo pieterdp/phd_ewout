@@ -8,7 +8,11 @@ class dbConnect:
     Functions to connect to the DB
     """
     def __init__ (self, config_file = 'etc/settings.conf'):
+        self.config_start (config_file)
+
+    def config_start (self, config_file = 'etc/settings.conf'):
         """
+        Function to load the configuration file
         """
         self.config = configparser.ConfigParser ()
         try:
@@ -22,7 +26,7 @@ class dbConnect:
         """
         Function to connect to a DB
         Uses self.config for its config values (host, db, user, pass)
-        @return true/false
+        :return true/false
         """
         try:
             self.cnx = mysql.connector.connect (user=self.config['DB']['user'],
@@ -36,7 +40,7 @@ class dbConnect:
     def disconnect (self):
         """
         Function to disconnect from the DB
-        @return true/false
+        :return true/false
         """
         try:
             self.cnx.close ()
