@@ -1,4 +1,4 @@
-import mysql.connector
+import sqlalchemy as mysql
 import configparser
 import cFile
 
@@ -28,24 +28,7 @@ class dbConnect:
         Uses self.config for its config values (host, db, user, pass)
         :return true/false
         """
-        try:
-            self.cnx = mysql.connector.connect (user=self.config['DB']['user'],
-                                                password=self.config['DB']['password'],
-                                                host=self.config['DB']['host'],
-                                                database=self.config['DB']['database'])
-        except mysql.connector.Error as err:
-            raise Exception (err)
-        return True
-
-    def disconnect (self):
-        """
-        Function to disconnect from the DB
-        :return true/false
-        """
-        try:
-            self.cnx.close ()
-        except mysql.connector.Error as err:
-            raise Exception (err)
+        self.cnx = mysql.create_engine ('mysql://%s:%s@%s/%s' % (self.config['DB']['user'], self.config['DB']['password'], self.config['DB']['host'], self.config['DB']['database']), echo=True)
         return True
 
 

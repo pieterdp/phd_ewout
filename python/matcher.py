@@ -1,6 +1,7 @@
 from lib.dbMatch import dbMatch
 from lib.fMatch import fuzzMatch
 from lib.cFile import cFile
+from progressbar import ProgressBar, Percentage, Bar
 import sys
 import getopt
 
@@ -35,9 +36,6 @@ def usage ():
     pass
 
 
-def update_progress(progress):
-    print ('\r[{0}] {1}%'.format('#'*(progress/10), progress))
-
 """
 Configuration options
 """
@@ -51,15 +49,16 @@ if __name__ == "__main__":
 else:
     sys.exit (-1)
 
+pbar = ProgressBar (widgets=[Percentage (), Bar ()], maxval=100).start ()
+
 print ('Preparing matching:')
 db_match = dbMatch (cli[2])
 db_match.config_start ()
 db_match.connect ()
-#try:
 db_match.matchPepare (cli[0], cli[1])
-#except Exception:
-#    e = sys.exc_info()[0]
-#    print ("Error: %s" % e)
-#    sys.exit (3)
 print ('Merging tables')
-update_progress (250)
+pbar.update (25)
+
+print ('Comparing')
+print (db_match.suggest_single (db_match.filterViews['Oostende'], [('Naam_a', 'Naam_b'), ('Voornaam_a', 'Voornaam_b')], ('ID_a', 1), 'ID_b'))
+pbar.finish ()

@@ -20,15 +20,11 @@ class fuzzMatch:
 
     def fMatch (self):
         """
+        Match two string using Levenshtein
         """
         self.strcmp = [self.fPrepare (elem) for elem in self.strcmp]
         self.mFunc = getattr ('fuzzMatch', "match%s" % self.a, self.matchLevenshtein)
-        try:
-            self.simRate = self.mFunc ()
-        except AttributeError:
-            print ("Error: function %s does not exist." % self.mFunc)
-            traceback.print_exc (file=sys.stdout)
-            sys.exit (2)
+        self.simRate = self.mFunc ()
         return self.simRate
 
     def matchLevenshtein (self):
@@ -36,4 +32,3 @@ class fuzzMatch:
         """
         mRate = ratio (self.strcmp[0], self.strcmp[1])
         return mRate
-		
