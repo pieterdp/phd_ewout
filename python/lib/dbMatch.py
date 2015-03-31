@@ -13,7 +13,7 @@ class dbMatch (dbConnect):
         self.table = mysql.Table (self.tableName, mysql.MetaData ())
         self.matches = {} # key = view_name; value = matches (see self.match ())
 
-    def __createView (self, columns, filter_column):
+    def __createView (self, columns, filter_column, where_column):
         """
         Create a view for a certain filter with a given list of columns
         :param columns: list of columns to select
@@ -23,7 +23,9 @@ class dbMatch (dbConnect):
         view_name = "%s_%s" % (filter_column, time.time ())
         self.filterViews[filter_column] = view_name
         columns = columns.split (',')
-        query = "CREATE VIEW `%s` AS SELECT %s, %s FROM `%s` a, `%s` b" % (view_name, ", ".join (["a.%s as %s_a" % (item, item) for item in columns]), ", ".join (["b.%s as %s_b" % (item, item) for item in columns]), self.tableName, self.tableName)
+        query = "CREATE VIEW `%s` AS SELECT %s, %s FROM `%s` a, `%s` b WHERE a.%s = '%s' AND b.%s = '%s'" % (view_name, ", ".join (["a.%s as %s_a" % (item, item) for item in columns]),
+                                                                                             ", ".join (["b.%s as %s_b" % (item, item) for item in columns]),
+                                                                                             self.tableName, self.tableName, where_column, filter_column, where_column, filter_column)
         self.cnx.execute (query)
         return True
 
@@ -51,7 +53,7 @@ class dbMatch (dbConnect):
         """
         self.__filter (filter_column)
         for mFilter in self.mFilters:
-            self.__createView (columns, mFilter)
+            self.__createView (columns, mFilter, filter_column)
         return True
 
     def suggest_single (self, view_name, filter_columns, id_column, id_matcher):
@@ -61,7 +63,7 @@ class dbMatch (dbConnect):
         :param filter_columns list of tuples containing columns to be matched: filter_columns[i] = (c_a, c_b)
         :param id_column tuple of the column_name and its value of the identifier
         :param id_matcher column name of the unique identifier of the item matched against in the cart prod
-        :return list of possible matches, ordered by score: matches[id] = [{c_x:[(c_z, 2%)}]
+        :return list of possible matches: matches[id] = {c_x:[(c_z, 2%)}
         """
         # View
         view = mysql.Table (view_name, mysql.MetaData ())

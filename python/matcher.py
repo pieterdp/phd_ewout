@@ -1,5 +1,5 @@
 from lib.dbMatch import dbMatch
-from lib.fMatch import fuzzMatch
+from lib.aMatch import aMatch
 from lib.cFile import cFile
 from progressbar import ProgressBar, Percentage, Bar
 import sys
@@ -60,5 +60,8 @@ print ('Merging tables')
 pbar.update (25)
 
 print ('Comparing')
-print (db_match.suggest_single (db_match.filterViews['Oostende'], [('Naam_a', 'Naam_b'), ('Voornaam_a', 'Voornaam_b')], ('ID_a', 1), 'ID_b'))
+single = db_match.suggest_single (db_match.filterViews['Wakkerdam'], [('Naam_a', 'Naam_b'), ('Voornaam_a', 'Voornaam_b')], ('ID_a', 2048), 'ID_b')
+amatch = aMatch ()
+r = amatch.matchCompare (single, ['Naam_a', 'Voornaam_a'])
+print (r)
 pbar.finish ()

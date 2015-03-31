@@ -1,4 +1,5 @@
 import sqlalchemy as mysql
+from sqlalchemy.sql import select, column
 import configparser
 import cFile
 
@@ -30,5 +31,16 @@ class dbConnect:
         """
         self.cnx = mysql.create_engine ('mysql://%s:%s@%s/%s' % (self.config['DB']['user'], self.config['DB']['password'], self.config['DB']['host'], self.config['DB']['database']), echo=True)
         return True
+
+    def get_single_item_by_id (self, id, table):
+        """
+        Get a single item by its ID
+        :param id: id
+        :param table: name of the table
+        :return: dict item
+        """
+        table = mysql.Table (table, mysql.MetaData ())
+        result = self.cnx.execute (select (from_obj=table).where ('ID' == id))
+        return result.fetchone ()
 
 
