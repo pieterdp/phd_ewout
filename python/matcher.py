@@ -55,7 +55,7 @@ print ('Preparing matching:')
 db_match = dbMatch (cli[2])
 db_match.config_start ()
 db_match.connect ()
-db_match.matchPepare (cli[0], cli[1])
+db_match.matchPepare (cli[0], cli[1], 'ID')
 print ('Merging tables')
 pbar.update (25)
 

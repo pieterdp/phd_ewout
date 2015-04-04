@@ -43,4 +43,13 @@ class dbConnect:
         result = self.cnx.execute (select (from_obj=table).where ('ID' == id))
         return result.fetchone ()
 
+    def selectColumns (self, table_name):
+        """
+        Function to select all columns in a given table
+        :param table_name: name of the table
+        :return: list columns
+        """
+        columns = []
+
+
 

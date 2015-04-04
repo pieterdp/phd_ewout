@@ -13,7 +13,7 @@ class dbMatch (dbConnect):
         self.table = mysql.Table (self.tableName, mysql.MetaData ())
         self.matches = {} # key = view_name; value = matches (see self.match ())
 
-    def __createView (self, columns, filter_column, where_column):
+    def __createView (self, columns, filter_column, where_column, id_column):
         """
         Create a view for a certain filter with a given list of columns
         :param columns: list of columns to select
@@ -23,9 +23,10 @@ class dbMatch (dbConnect):
         view_name = "%s_%s" % (filter_column, time.time ())
         self.filterViews[filter_column] = view_name
         columns = columns.split (',')
-        query = "CREATE VIEW `%s` AS SELECT %s, %s FROM `%s` a, `%s` b WHERE a.%s = '%s' AND b.%s = '%s'" % (view_name, ", ".join (["a.%s as %s_a" % (item, item) for item in columns]),
+        query = "CREATE VIEW `%s` AS SELECT %s, %s FROM `%s` a, `%s` b WHERE a.%s = '%s' AND b.%s = '%s' AND a.%s <> b.%s" % (view_name, ", ".join (["a.%s as %s_a" % (item, item) for item in columns]),
                                                                                              ", ".join (["b.%s as %s_b" % (item, item) for item in columns]),
-                                                                                             self.tableName, self.tableName, where_column, filter_column, where_column, filter_column)
+                                                                                             self.tableName, self.tableName, where_column, filter_column, where_column, filter_column,
+                                                                                             id_column, id_column)
         self.cnx.execute (query)
         return True
 
@@ -44,7 +45,7 @@ class dbMatch (dbConnect):
         self.mFilters = m_filters
         return self.mFilters
 
-    def matchPepare (self, filter_column, columns):
+    def matchPepare (self, filter_column, columns, id_column):
         """"
         Prepare for matching
         :param filter_column column to filter on (selects these from the DB and creates views based on this
@@ -53,7 +54,7 @@ class dbMatch (dbConnect):
         """
         self.__filter (filter_column)
         for mFilter in self.mFilters:
-            self.__createView (columns, mFilter, filter_column)
+            self.__createView (columns, mFilter, filter_column, id_column)
         return True
 
     def suggest_single (self, view_name, filter_columns, id_column, id_matcher):

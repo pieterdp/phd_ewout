@@ -12,7 +12,7 @@ class aMatch:
         Function to compare two matches based on their score
         :param matches[id] = {c_x:[(c_z, 2%)} (id is the id of the item matched against)
         :param fields: the list of column names "c_x"
-        :return matched_compared = {agg:[(pos, id, score), ...], field_x:[(pos, id, score), ...], ...}
+        :return matched_compared = {agg:[(pos, id, score, avg), ...], field_x:[(pos, id, score), ...], ...}
         """
         result_set = {}
         result = {'agg': []}
@@ -38,18 +38,20 @@ class aMatch:
         t_score = []
         for i in matches.keys ():
             sc = 0
+            am = 0 # To compute the average: total
             for field in result_set.keys ():
                 for (n, s) in result[field]:
                     if n == i:
                         sc = sc + s
-            t_agg.append ((i, sc))
+                        am = am + 1
+            t_agg.append ((i, sc, sc/am))
             t_score.append (sc)
         # Order the aggregated values
         t_score.sort (reverse=True)
         for s in t_score:
-            for (i, sc) in t_agg:
+            for (i, sc, av) in t_agg:
                 if s == sc:
-                    result['agg'].append ((i, sc))
+                    result['agg'].append ((i, sc, av))
         return result
 
 
