@@ -2,6 +2,7 @@ import sqlalchemy as mysql
 from sqlalchemy.sql import select, column
 import configparser
 import cFile
+import sys
 
 
 class dbConnect:
@@ -29,7 +30,7 @@ class dbConnect:
         Uses self.config for its config values (host, db, user, pass)
         :return true/false
         """
-        self.cnx = mysql.create_engine ('mysql://%s:%s@%s/%s' % (self.config['DB']['user'], self.config['DB']['password'], self.config['DB']['host'], self.config['DB']['database']), echo=True)
+        self.cnx = mysql.create_engine ('mysql://%s:%s@%s/%s' % (self.config['DB']['user'], self.config['DB']['password'], self.config['DB']['host'], self.config['DB']['database']))
         return True
 
     def get_single_item_by_id (self, id, table):
@@ -50,6 +51,10 @@ class dbConnect:
         :return: list columns
         """
         columns = []
+        result = self.cnx.execute ("SHOW COLUMNS FROM %s" % table_name)
+        for row in result:
+            columns.append (row[0])
+        return columns
 
 
 

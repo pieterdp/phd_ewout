@@ -83,6 +83,55 @@ class dbMatch (dbConnect):
                 sugg[row[id_matcher]][field_a] = (field_b, m.fMatch ())
         return sugg
 
+    def match_single (self, matches):
+        """
+        Does one of the following:
+            if it finds >=1 match with a score of 1, it only suggests those (1 = equal)
+            if it finds a match with a score of >=0.5, it suggests those
+            if it only finds matches <=0.5, it suggests the one with the highest score
+        :param matches: (return of aMatch)
+        :return: matches = [(id, sc), ...]
+        """
+        sugg_05 = [] # Matches with s >= 0.5
+        sugg_1 = [] # Matches with s = 1
+        sugg_00 = [] # Highest match with s < 0.5 (only filled if above are empty)
+        for match in matches['agg']:
+            if match[1] == 1:
+                sugg_1.append (match)
+            elif match[1] >= 0.5:
+                sugg_05.append (match)
+        if not sugg_1 and not sugg_05:
+            max_sc = 0 # Maximum score found
+            max_item = [] # Item with the highest score
+            for match in matches['agg']:
+                if match[1] > max_sc or max_sc == 0:
+                    max_item = [match]
+                elif match[1] == max_sc and max_sc != 0:
+                    max_item.append (match)
+            sugg_00 = max_item
+            return sugg_00
+        elif sugg_1:
+            return sugg_1
+        elif sugg_05 and not sugg_1:
+            scores = []
+            items = []
+            for match in sugg_05:
+                scores.append (match[1])
+            scores.sort (reverse=True)
+            for score in scores:
+                for match in sugg_05:
+                    if match[1] == score:
+                        items.append (match)
+            return items
+
+    def store_match (self, id_matched, id_match):
+        pass
+
+    def clean (self):
+        pass
+
+
+
 
 
 

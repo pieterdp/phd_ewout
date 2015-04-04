@@ -1,6 +1,7 @@
 from lib.dbMatch import dbMatch
 from lib.aMatch import aMatch
 from lib.cFile import cFile
+from lib.dbConnect import dbConnect
 from progressbar import ProgressBar, Percentage, Bar
 import sys
 import getopt
@@ -55,13 +56,6 @@ print ('Preparing matching:')
 db_match = dbMatch (cli[2])
 db_match.config_start ()
 db_match.connect ()
-db_match.matchPepare (cli[0], cli[1], 'ID')
-print ('Merging tables')
-pbar.update (25)
-
-print ('Comparing')
-single = db_match.suggest_single (db_match.filterViews['Wakkerdam'], [('Naam_a', 'Naam_b'), ('Voornaam_a', 'Voornaam_b')], ('ID_a', 2048), 'ID_b')
-amatch = aMatch ()
-r = amatch.matchCompare (single, ['Naam_a', 'Voornaam_a'])
-print (r)
-pbar.finish ()
+dbi = dbConnect ()
+dbi.connect ()
+print (dbi.selectColumns ('app_test'))
