@@ -50,12 +50,24 @@ if __name__ == "__main__":
 else:
     sys.exit (-1)
 
-pbar = ProgressBar (widgets=[Percentage (), Bar ()], maxval=100).start ()
 
 print ('Preparing matching:')
-db_match = dbMatch (cli[2])
+db_match = dbMatch (cli[2], cli[2] + "_match")
 db_match.config_start ()
 db_match.connect ()
-dbi = dbConnect ()
-dbi.connect ()
-print (dbi.selectColumns ('app_test'))
+db_match.matchPepare (cli[0], cli[1].split (','), 'ID')
+print ('Merging tables')
+
+print ('Comparing')
+single = db_match.suggest_single (db_match.filterViews['Wakkerdam'], [('Naam_a', 'Naam_b'), ('Voornaam_a', 'Voornaam_b')], ('ID_a', 2049), 'ID_b', 'ID')
+amatch = aMatch ()
+r = amatch.matchCompare (single, ['Naam_a', 'Voornaam_a'])
+print (r)
+sys.exit ()
+m = db_match.match_single(r)
+print (m)
+for (id, sc, av) in m:
+    print (id)
+    sf = db_match.get_single_item_by_id (id, 'app_test')
+    sf = [str (s) for s in sf]
+    print (" ".join (sf))
