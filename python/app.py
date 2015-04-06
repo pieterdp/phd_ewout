@@ -71,7 +71,7 @@ def select_match (*args):
     title_text = " ".join (title_text)
     #[(id, sc), ...]
     options = []
-    r_sorted = t_sorted[0:8] # Limit to first 8 items (TODO: config)
+    r_sorted = t_sorted[0:20] # Limit to first 20 items (TODO: config)
     for (f_id, sc, avg) in r_sorted:
         items = [str (s) for s in dbi.get_single_item_by_id (f_id, table, columns=include_columns)]
         options.append (" ".join (items) + "(" + str (round (avg, 2)) + ")")
