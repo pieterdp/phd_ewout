@@ -16,21 +16,52 @@ class dbMatch (dbConnect):
         self.matchName = match_name
         self.match = mysql.Table (self.matchName, mysql.MetaData ()) # Create
 
-    def __createView (self, columns, filter_column, where_column, id_column):
+    def __createView (self, columns, filter_column, where_column, id_column, inscr_column, age_column):
         """
         Create a view for a certain filter with a given list of columns
         :param columns: list of columns to select
         :param filter: string
+        :param where: additional where parameters
+        :param id: column containing the id
+        :param inscr: column containing the inschrijvingsdatum
+        :param age: column containing the age
         :return:
         """
         view_name = "%s_%s" % (filter_column, int(time.time ()))
         self.filterViews[filter_column] = view_name
         #columns = columns.split (',')
-        query = "CREATE VIEW `%s` AS SELECT a.%s as ID, %s, %s FROM `%s` a, `%s` b WHERE a.%s = '%s' AND b.%s = '%s' AND a.%s <> b.%s AND a.matched = 'NO'" %\
-                                                                                            (view_name, id_column, ", ".join (["a.%s as %s_a" % (item, item) for item in columns]),
+        query = "CREATE VIEW `%s` AS SELECT a.%s as ID, " \
+                "DATE_SUB(CAST(a.%s AS DATETIME), INTERVAL CAST(a.%s + 5 AS SIGNED) YEAR) as min_date_of_birth, " \
+                "DATE_SUB(CAST(a.%s AS DATETIME), INTERVAL CAST(a.%s - 5 AS SIGNED) YEAR) as max_date_of_birth, " \
+                "%s, %s FROM `%s` a, `%s` b " \
+                "WHERE a.%s = '%s' " \
+                "AND b.%s = '%s' " \
+                "AND a.%s <> b.%s " \
+                "AND a.matched = 'NO' " \
+                "AND DATE_SUB(CAST(b.%s AS DATETIME), INTERVAL CAST(b.%s + 5 AS SIGNED) YEAR) BETWEEN " \
+                "DATE_SUB(CAST(a.%s AS DATETIME), INTERVAL CAST(a.%s + 5 AS SIGNED) YEAR) AND " \
+                "DATE_SUB(CAST(a.%s AS DATETIME), INTERVAL CAST(a.%s - 5 AS SIGNED) YEAR)" %\
+                                                                                            (view_name, id_column,
+                                                                                             inscr_column, age_column,
+                                                                                             inscr_column, age_column,
+                                                                                             ", ".join (["a.%s as %s_a" % (item, item) for item in columns]),
                                                                                              ", ".join (["b.%s as %s_b" % (item, item) for item in columns]),
-                                                                                             self.tableName, self.tableName, where_column, filter_column, where_column, filter_column,
-                                                                                             id_column, id_column)
+                                                                                             self.tableName, self.tableName,
+                                                                                             where_column, filter_column,
+                                                                                             where_column, filter_column,
+                                                                                             id_column, id_column,
+                                                                                             inscr_column, age_column,
+                                                                                             inscr_column, age_column,
+                                                                                             inscr_column, age_column)
+        """
+        Create a query that uses a date comparison
+        Only cart. prod. items with a computed_birthyear between
+        inschrijvingsdatum - leeftijd - 5
+        inschrijvingsdatum - leeftijd + 5
+        DATE_SUB(CAST(b.Inschrijvingsdatum AS DATETIME), INTERVAL CAST(b.Leeftijd + 5 AS SIGNED) YEAR) BETWEEN
+        DATE_SUB(CAST(a.Inschrijvingsdatum AS DATETIME), INTERVAL CAST(a.Leeftijd + 5 AS SIGNED) YEAR) AND
+        DATE_SUB(CAST(a.Inschrijvingsdatum AS DATETIME), INTERVAL CAST(a.Leeftijd - 5 AS SIGNED) YEAR)
+        """
         self.cnx.execute (query)
         return True
 
@@ -49,16 +80,19 @@ class dbMatch (dbConnect):
         self.mFilters = m_filters
         return self.mFilters
 
-    def matchPepare (self, filter_column, columns, id_column):
+    def matchPepare (self, filter_column, columns, id_column, inscr_column, age_column):
         """"
         Prepare for matching
         :param filter_column column to filter on (selects these from the DB and creates views based on this
         column with a cart.prod of the original table filtered on filter_column)
         :param columns list of columns to include in the cart prod
+        :param id: column containing the id
+        :param inscr: column containing the inschrijvingsdatum
+        :param age: column containing the age
         """
         self.__filter (filter_column)
         for mFilter in self.mFilters:
-            self.__createView (columns, mFilter, filter_column, id_column)
+            self.__createView (columns, mFilter, filter_column, id_column, inscr_column, age_column)
         return True
 
     def suggest_single (self, view_name, filter_columns, id_column, id_matcher, id_original):

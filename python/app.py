@@ -35,8 +35,10 @@ def select_columns (*args):
     id_column = F.add (npyscreen.TitleSelectOne, name='ID column:', values=columns, max_height=8)
     selected_columns = F.add (npyscreen.TitleMultiSelect, name='Selected columns in view:', values=columns, max_height=8)
     filter_column = F.add (npyscreen.TitleSelectOne, name='Filter column:', values=columns, max_height=8)
+    inscr_column = F.add (npyscreen.TitleSelectOne, name='Inscription date column:', values=columns, max_height=8)
+    age_column = F.add (npyscreen.TitleSelectOne, name='Age column:', values=columns, max_height=8)
     F.edit ()
-    return (id_column.value, selected_columns.value, filter_column.value)
+    return (id_column.value, selected_columns.value, filter_column.value, inscr_column.value, age_column.value)
 
 
 def select_compare_columns (*args):
@@ -93,11 +95,16 @@ table = npyscreen.wrapper_basic (select_table)
 columns = dbi.selectColumns (table)
 s_columns = npyscreen.wrapper_basic (select_columns)
 print ("Creating view ... ")
+##
+# Get the columns we want to include in the view
 filter_column = columns[s_columns[2][0]]
 include_columns = []
 for c in s_columns[1]:
     include_columns.append (columns[c])
 id_column = columns[s_columns[0][0]]
+# inscr_column.value, age_column.value
+inscr_column = columns[s_columns[3][0]]
+age_column = columns[s_columns[4][0]]
 dbm = dbMatch (table, table + '_match')
 dbm.config_start ()
 dbm.connect ()
@@ -105,7 +112,7 @@ dbm.connect ()
 # include_columns should always contain id_column (or stuff won't work)
 if id_column not in include_columns:
     include_columns.append (id_column)
-dbm.matchPepare (filter_column, include_columns, id_column)
+dbm.matchPepare (filter_column, include_columns, id_column, inscr_column, age_column)
 print ("[OK]")
 # Execute matching per view
 for v in dbm.filterViews.values ():
