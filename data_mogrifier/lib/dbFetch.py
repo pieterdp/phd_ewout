@@ -1,4 +1,6 @@
 from .dbConnect import dbConnect, Prisoners, OldPrisoners
+from .dbConnect import PrisonersMerged
+from .dbPrisonersMatch import PrisonersCheck
 from .fResolve import fResolve
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import and_, or_

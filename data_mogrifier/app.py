@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-from lib.dbFetch import dbFetch
+from lib.mergeOriginal import MergeOriginal
 
-d = dbFetch()
-
-d.mergePrisoners()
-d.comparePrisoners()
+db = MergeOriginal()
+db.merge()
+db.mk_big_match()
+db.match_check()

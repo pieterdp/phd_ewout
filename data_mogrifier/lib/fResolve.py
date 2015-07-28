@@ -1,5 +1,6 @@
 from statistics import mean, median, mode, StatisticsError
 from math import floor
+import datetime
 
 class fResolve:
 
@@ -16,8 +17,12 @@ class fResolve:
         m = self.coalesce_misdrijf()
         g = self.coalesce_place('Geboorteplaats')
         w = self.coalesce_place('Woonplaats')
+        try:
+            p_id = getattr(instances[0], 'p_ID')
+        except AttributeError:
+            p_id = getattr(instances[0], 'Id_gedetineerde')
         return {
-            'phase1_id': getattr(instances[0], 'p_ID'),
+            'phase1_id': p_id,
             'naam': getattr(instances[0], 'Naam'),
             'voornaam': getattr(instances[0], 'Voornaam'),
             'geboorteplaats': g['place'],
@@ -81,7 +86,10 @@ class fResolve:
                 age = int(getattr(instance, 'Leeftijd'))
             if getattr(instance, 'Inschrijvingsdatum') is not None:
                 yofi = getattr(instance, 'Inschrijvingsdatum')
-                yofi = int(yofi[0:4])
+                if isinstance(yofi, datetime.date):
+                    yofi = yofi.year
+                else:
+                    yofi = int(yofi[0:4])
             geboortejaar.append(yofi - age)
         """
         Get the mode; if there isn't one, use mean (round down)
@@ -100,7 +108,7 @@ class fResolve:
         beroepen = {}  # key = hisco; value = beroep
         for instance in self.instances:
             if getattr(instance, 'HISCO') is not None:
-                beroepen[getattr(instance, 'HISCO')] = getattr(instance, 'Beroep_vertaling')
+                beroepen[getattr(instance, 'HISCO')] = str(getattr(instance, 'Beroep_vertaling'))
         # Sort keys
         k = sorted(beroepen.keys())
         if len(k) == 0:
@@ -109,8 +117,8 @@ class fResolve:
                 'beroep': ''
             }
         return {
-            'HISCO': k[0],
-            'beroep': beroepen[k[0]]
+            'HISCO': str(k[0]),
+            'beroep': str(beroepen[k[0]])
         }
 
     def coalesce_misdrijf (self):
@@ -121,7 +129,7 @@ class fResolve:
         misdrijf=[]
         for instance in self.instances:
             if getattr(instance, 'Misdrijf_vertaling') is not None:
-                misdrijf.append(getattr(instance, 'Misdrijf_vertaling'))
+                misdrijf.append(str(getattr(instance, 'Misdrijf_vertaling')))
         return ';'.join(misdrijf)
 
     def coalesce_place(self, type):
@@ -162,8 +170,8 @@ class fResolve:
                 '1876': []
             }
             for g in group:
-                coalesced['place'].append(g['place'])
-                coalesced['nis'].append(g['nis'])
+                coalesced['place'].append(str(g['place']))
+                coalesced['nis'].append(str(g['nis']))
                 coalesced['8'].append(str(g['8']))
                 coalesced['1846'].append(str(g['1846']))
                 coalesced['1876'].append(str(g['1876']))
@@ -176,9 +184,9 @@ class fResolve:
             }
         else:
             return {
-                'place': group[0]['place'],
-                'nis': group[0]['nis'],
-                '8': group[0]['8'],
-                '1846': group[0]['1846'],
-                '1876': group[0]['1876']
+                'place': str(group[0]['place']),
+                'nis': str(group[0]['nis']),
+                '8': str(group[0]['8']),
+                '1846': str(group[0]['1846']),
+                '1876': str(group[0]['1876'])
             }
