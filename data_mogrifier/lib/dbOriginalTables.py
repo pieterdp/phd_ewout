@@ -3,9 +3,6 @@ from sqlalchemy import create_engine, Column, Integer, String, Numeric, Date, Fo
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
-
-
-
 Base = declarative_base()
 
 class Archiefbestanden(Base):
