@@ -10,7 +10,7 @@ class dbConnect:
     """
 
     """
-    engine = create_engine('mysql://%s:%s@%s/%s' % ('', '', '', ''), encoding='utf8', echo=True)
+    engine = create_engine('mysql://%s:%s@%s/%s' % ('data_mogrifier', 'znTren4qX7NahtDd', '192.168.0.200', 'ewout_doctoraat_controle'), encoding='utf8', echo=False)
     Session = sessionmaker(bind=engine)
     session = Session()
 
