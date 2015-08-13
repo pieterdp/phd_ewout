@@ -5,6 +5,26 @@ from sqlalchemy.orm import sessionmaker
 
 Base = declarative_base()
 
+
+class PrisonersNew(Base):
+    __tablename__ = 'prisoners_newtable'
+    id = Column(Integer, primary_key=True)
+    id_gedetineerde = Column(Integer)
+    naam = Column(String(255))
+    voornaam = Column(String(255))
+    geboorteplaats = Column(String(255))
+    geboorteplaats_nis = Column(String(255))
+    geslacht = Column(String(255))
+    misdrijf = Column(String(255))
+    woonplaats = Column(String(255))
+    woonplaats_nis = Column(String(255))
+    beroep = Column(String(255))
+    leeftijd = Column(String(255))
+    geboortejaar = Column(String(255))
+    lichaamslengte = Column(String(255))
+    flag = Column(Integer)
+
+
 class PrisonersCheck(Base):
     __tablename__ = 'prisoners_check'
     id = Column(Integer, primary_key=True)
