@@ -1,11 +1,14 @@
 from statistics import mean, median, mode, StatisticsError
 from math import floor
 import datetime
+from random import randint
 
 class fResolve:
 
     def __init__(self):
         self.instances = []
+        self.use_age = 35
+        self.max_diff = 5
 
     def compare_instances(self, instances):
         if type(instances) is not list:
@@ -43,6 +46,57 @@ class fResolve:
             'lichaamslengte': l['lichaamslengte'],
             'flag': l['flag']
         }
+
+    def merge_size(self):
+        """
+        Get the size ("Lichaamslengte") of the instance in instances that is closest to self.use_age
+        If >1 instances are equally close, use mode or mean
+        If the difference between the calculated size and the largest size (of instances) is > self.max_diff, set flag to 1
+        :return:
+        """
+        comparator = [] # List of tuples where item_1 is the age and item_2 the size
+        for instance in self.instances:
+            if getattr(instance, 'Lichaamslengte') is not None:
+                if getattr(instance, 'Leeftijd') is None:
+                    continue
+                comparator.append((getattr(instance, 'Leeftijd'), getattr(instance, 'Lichaamslengte')))
+        # Sort them by age
+        comparator = sorted(comparator, key=lambda group: group[0])  # lambda function is like f(group):
+        # return group[0] for item in comparator
+        # Get all items that have c[0] equal to self.use_age or where the distance between self.use_age is smallest
+        dist = []  # Tuples like item_1 is distance and item_2 age and item_3 size
+        for c in comparator:
+            dist.append((
+                abs(float(c[0]) - self.use_age),  # Distance
+                c[0],  # Leeftijd
+                c[1]  # Lichaamslengte
+            ))
+        # Now get those for which the distance is smallest
+        dist = sorted(dist, key=lambda distance: distance[0])  # Sort list
+        dist.reverse()  # so we can use pop() to get the last item, which has the lowest distance
+        c_min = dist.pop()
+        to_compare = []  # List of items for which the distance is equal to the lowest distance to self.use_age;
+        # from those items we get the mode/mean to get a better size
+        popped = c_min
+        while c_min[0] == popped[0]:
+            to_compare.append(popped)
+            popped = dist.pop()
+        sizes = sorted([tc[2] for tc in to_compare])
+        flag = 0
+        if len(sizes) > 1:
+            try:
+                m = mode(sizes)
+            except StatisticsError:
+                m = sizes[randint(0, len(sizes))]
+            return {
+                'lichaamslengte': m,
+                'flag': flag
+            }
+        else:
+            return {
+                'lichaamslengte': sizes[0],
+                'flag': flag
+            }
 
     def coalesce_lichaamslengte (self):
         """

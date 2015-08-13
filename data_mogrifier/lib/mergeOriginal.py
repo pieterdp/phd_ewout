@@ -109,7 +109,7 @@ class MergeOriginal(dbConnect):
             dbConnect.session.commit()
 
     def match_check(self):
-        for instance in dbConnect.session.query(PrisonersMerged).all():
+        for instance in dbConnect.session.query(PrisonersMerged).filter(and_(PrisonersMerged.Leeftijd > 21, PrisonersMerged.Leeftijd < 50)).all():
             # Check whether Id_gedetineerde is a slave in big_match
             # If true; use fResolve to insert the information of the master
             # Else; insert information of this as master
@@ -147,31 +147,30 @@ class MergeOriginal(dbConnect):
                     # This instance is in itself a master
                     # Master added
                     all_prisoners.append(dbConnect.session.query(PrisonersMerged).
-                                         filter(and_(PrisonersMerged.Id_gedetineerde == is_master.id_gedetineerde_master, PrisonersMerged.Leeftijd > 21)).first())
+                                         filter(PrisonersMerged.Id_gedetineerde == is_master.id_gedetineerde_master).first())
                     # Add slaves
                     slaves = dbConnect.session.query(PrisonersMatch). \
                         filter(PrisonersMatch.id_gedetineerde_master == is_master.id_gedetineerde_master).all()
                     for slave in slaves:
                         all_prisoners.append(dbConnect.session.query(PrisonersMerged).
-                                             filter(and_(PrisonersMerged.Id_gedetineerde == slave.id_gedetineerde_slave, PrisonersMerged.Leeftijd > 21)).first())
+                                             filter(PrisonersMerged.Id_gedetineerde == slave.id_gedetineerde_slave).first())
                     check_prisoner.merged_id = is_master.id_gedetineerde_master
                     check_prisoner.id_gedetineerde = is_master.id_gedetineerde_master
                 elif master is not None:
                     # Get all slaves + the master as instances for fResolve
                     # Master added
                     all_prisoners.append(dbConnect.session.query(PrisonersMerged).
-                                         filter(and_(PrisonersMerged.Id_gedetineerde == master.id_gedetineerde_master, PrisonersMerged.Leeftijd > 21)).first())
+                                         filter(PrisonersMerged.Id_gedetineerde == master.id_gedetineerde_master).first())
                     # Add primary slave
                     all_prisoners.append(dbConnect.session.query(PrisonersMerged).
-                                         filter(and_(PrisonersMerged.Id_gedetineerde == master.id_gedetineerde_slave, PrisonersMerged.Leeftijd > 21)).first())
+                                         filter(PrisonersMerged.Id_gedetineerde == master.id_gedetineerde_slave).first())
                     # Add slaves
                     slaves = dbConnect.session.query(PrisonersMatch). \
                         filter(and_(PrisonersMatch.id_gedetineerde_master == master.id_gedetineerde_master,
                                     PrisonersMatch.id_gedetineerde_slave != master.id_gedetineerde_slave)).all()
                     for slave in slaves:
                         all_prisoners.append(dbConnect.session.query(PrisonersMerged).
-                                             filter(and_(PrisonersMerged.Id_gedetineerde == slave.id_gedetineerde_slave,
-                                                         PrisonersMerged.Leeftijd > 21)).first())
+                                             filter(PrisonersMerged.Id_gedetineerde == slave.id_gedetineerde_slave).first())
                     check_prisoner.merged_id = master.id_gedetineerde_master
                     check_prisoner.id_gedetineerde = master.id_gedetineerde_master
                 else:
